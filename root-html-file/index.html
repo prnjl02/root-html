@@ -4,14 +4,16 @@
     <meta http-equiv="Content-Security-Policy" content="default-src *  data: blob: 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>CMA Ref</title>
+    <title>Your application</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="importmap-type" content="systemjs-importmap">
     <script type="systemjs-importmap">
       {
         "imports": {
+          "login": "http://localhost:4201/main.js",
+		  "cmamf": "http://localhost:5700/main.js",
           "usermf":"http://localhost:5900/main.js",
-          "cmamf": "http://localhost:5700/main.js",
+		  "chartmf":"http://localhost:5600/main.js",
           "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/5.5.0/system/single-spa.min.js"
         }
       }
@@ -29,33 +31,50 @@
     <script>
       System.import('single-spa').then(function (singleSpa) {
         singleSpa.registerApplication(
+          'login',
+          function () {
+            return System.import('login');
+          },
+          function (location) {
+            return location.pathname.startsWith('/');
+          }
+        )
+        singleSpa.registerApplication(
           'cmamf',
           function () {
             return System.import('cmamf');
           },
           function (location) {
-            return true;
+            return location.pathname.startsWith('/dashboard');
           }
         )
-singleSpa.registerApplication(
+       singleSpa.registerApplication(
           'usermf',
           function () {
             return System.import('usermf');
           },
           function (location) {
-            return location.pathname.startsWith('/usermf');
+            return location.pathname.startsWith('/dashboard');
           }
-        );
-        
-		 
-		
-	  
+        )
+		 singleSpa.registerApplication(
+          'chartmf',
+          function () {
+            return System.import('chartmf');
+          },
+          function (location) {
+            return location.pathname.startsWith('/dashboard');
+          }
+        )
 
         singleSpa.start();
       })
     </script>
-    
-	
-	
+    <import-map-overrides-full></import-map-overrides-full>
+	<p>hiiiiiiiii
+	<div [id]="single-spa-application:cmamf"></div>
+	<div [id]="single-spa-application:usermf"></div>
+	<div [id]="single-spa-application:chartmf"></div>
+	</p>
   </body>
 </html>
